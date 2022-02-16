@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjpowernode.workbench.dao.TranDao">
+    <select id="getTotal" resultType="int">
+        select count(*) from tbl_tran
+    </select>
+
+    <select id="getCharts" resultType="Map">
+        select count(*) as value,stage as name from tbl_tran group by stage
+    </select>
+
+    <select id="getTranById" resultType="com.bjpowernode.workbench.domain.Tran">
+        select t.id,t.owner,t.money,t.name,t.expectedDate,cus.name customerId,con.fullname contactsId,
+               a.name activityId,t.stage,t.type,t.source,t.description,t.contactSummary,t.nextContactTime
+        from tbl_tran t
+        left join tbl_customer cus on t.customerId = cus.id
+        left join tbl_contacts con on t.contactsId = con.id
+        left join tbl_activity a on t.activityId = a.id
+        left join tbl_user u on t.owner = u.id
+        where t.id=#{id}
+    </select>
+
+    <select id="detail" resultType="com.bjpowernode.workbench.domain.Tran">
+        select t.id,u.name owner,t.money,t.name,t.expectedDate,cus.name customerId,con.fullname contactsId,
+               a.name activityId,t.stage,t.type,t.source,t.description,t.contactSummary,t.nextContactTime,
+               t.createBy,t.createTime,t.editBy,t.editTime
+        from tbl_tran t
+        left join tbl_customer cus on t.customerId = cus.id
+        left join tbl_contacts con on t.contactsId = con.id
+        left join tbl_activity a on t.activityId = a.id
+        left join tbl_user u on t.owner = u.id
+        where t.id=#{id}
+    </select>
+
+
+    <select id="getTranListPage" resultType="com.bjpowernode.workbench.domain.Tran">
+        select t.id,t.name,t.stage,t.type,u.name owner,t.source,cus.name customerId,con.fullname contactsId
+        from tbl_tran t
+        left join tbl_user u on t.owner=u.id
+        left join tbl_customer cus on t.customerId=cus.id
+        left join tbl_contacts con on t.contactsId=con.id
+        <where>
+            <if test="tran.name != null and tran.name != ''">t.name like '%' #{tran.name} '%'</if>
+            <if test="customerName != null and customerName != ''">and cus.name like '%' #{customerName} '%'</if>
+            <if test="tran.owner != null and tran.owner != ''">and u.name like '%' #{tran.owner} '%'</if>
+            <if test="tran.stage != null and tran.stage != ''">and t.stage=#{tran.stage}</if>
+            <if test="tran.type != null and tran.type != ''">and t.type=#{tran.type}</if>
+            <if test="tran.source != null and tran.source != ''">and t.source=#{tran.source}</if>
+            <if test="contactsName != null and contactsName != ''">and con.fullname like '%' #{contactsName} '%'</if>
+        </where>
+    </select>
+
+    <select id="getTotalByCondition" resultType="int">
+        select count(*)
+        from tbl_tran t
+        left join tbl_user u on t.owner=u.id
+        left join tbl_customer cus on t.customerId=cus.id
+        left join tbl_contacts con on t.contactsId=con.id
+        <where>
+            <if test="tran.name != null and tran.name != ''">t.name like '%' #{tran.name} '%'</if>
+            <if test="customerName != null and customerName != ''">and cus.name like '%' #{customerName} '%'</if>
+            <if test="tran.owner != null and tran.owner != ''">and u.name like '%' #{tran.owner} '%'</if>
+            <if test="tran.stage != null and tran.stage != ''">and t.stage=#{tran.stage}</if>
+            <if test="tran.type != null and tran.type != ''">and t.type=#{tran.type}</if>
+            <if test="tran.source != null and tran.source != ''">and t.source=#{tran.source}</if>
+            <if test="contactsName != null and contactsName != ''">and con.fullname like '%' #{contactsName} '%'</if>
+        </where>
+    </select>
+
+
+    <insert id="save">
+        insert into tbl_tran(id,owner,money,name,expectedDate,
+        customerId,stage,type,source,activityId,contactsId,
+        createBy,createTime,editBy,editTime,description,
+        contactSummary,nextContactTime)
+        values (#{id},#{owner},#{money},#{name},#{expectedDate},
+        #{customerId},#{stage},#{type},#{source},#{activityId},
+        #{contactsId},#{createBy},#{createTime},#{editBy},
+        #{editTime},#{description},#{contactSummary},#{nextContactTime})
+    </insert>
+
+    <update id="update">
+        update tbl_tran set
+        owner=#{owner},money=#{money},name=#{name},expectedDate=#{expectedDate},customerId=#{customerId},
+        stage=#{stage},type=#{type},source=#{source},editBy=#{editBy},editTime=#{editTime},
+        <if test="activityId != null and activityId != ''">activityId=#{activityId},</if>
+        <if test="contactsId != null and contactsId != ''">contactsId=#{contactsId},</if>
+        description=#{description},contactSummary=#{contactSummary},nextContactTime=#{nextContactTime}
+        where id=#{id}
+    </update>
+
+    <update id="changeStage">
+        update tbl_tran set stage=#{stage},editBy=#{editBy},editTime=#{editTime}
+        where id=#{id}
+    </update>
+
+    <delete id="delete">
+        delete from tbl_tran where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+  	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
