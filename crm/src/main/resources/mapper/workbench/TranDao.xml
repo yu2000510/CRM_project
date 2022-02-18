@@ -4,6 +4,44 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bjpowernode.workbench.dao.TranDao">
+    <resultMap id="getTran" type="com.bjpowernode.workbench.domain.Tran">
+        <id column="id" property="id" />
+        <result column="owner" property="owner" />
+        <result column="money" property="money" />
+        <result column="name" property="name" />
+        <result column="expectedDate" property="expectedDate" />
+        <result column="stage" property="stage" />
+        <result column="type" property="type" />
+        <result column="source" property="source" />
+        <collection property="tranHistoryList" javaType="java.util.List" ofType="com.bjpowernode.workbench.domain.TranHistory">
+            <id column="th_id" property="id" />
+            <result column="th_stage" property="stage" />
+            <result column="th_money" property="money" />
+            <result column="th_expectedDate" property="expectedDate" />
+            <result column="th_createTime" property="createTime" />
+            <result column="th_createBy" property="createBy" />
+        </collection>
+    </resultMap>
+    <select id="getTranAndHistory" resultMap="getTran">
+        select t.id,u.name owner,t.money,t.name,t.expectedDate,t.stage,t.type,t.source,
+        th.id th_id,th.stage th_stage, th.money th_money,th.expectedDate th_expectedDate,
+        th.createTime th_createTime,th.createBy th_createBy
+        from tbl_tran t
+        join tbl_tran_history th
+        on t.id=th.tranId
+        join tbl_user u
+        on u.id=t.owner
+        where t.name=#{name}
+    </select>
+
+
+
+
+
+
+
+
+
     <select id="getTotal" resultType="int">
         select count(*) from tbl_tran
     </select>

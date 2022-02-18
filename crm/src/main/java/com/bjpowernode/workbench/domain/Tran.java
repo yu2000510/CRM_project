@@ -1,5 +1,7 @@
 package com.bjpowernode.workbench.domain;
 
+import java.util.List;
+
 public class Tran {
 	
 	private String id;
@@ -20,6 +22,16 @@ public class Tran {
 	private String description;
 	private String contactSummary;	//联系纪要
 	private String nextContactTime;	//下次联系时间
+
+	private List<TranHistory> tranHistoryList;
+
+	public List<TranHistory> getTranHistoryList() {
+		return tranHistoryList;
+	}
+
+	public void setTranHistoryList(List<TranHistory> tranHistoryList) {
+		this.tranHistoryList = tranHistoryList;
+	}
 
 	private String possibility;
 

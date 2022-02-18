@@ -31,4 +31,6 @@ public interface TranDao {
     int getTotal();
 
     List<Map<String, Object>> getCharts();
+
+    Tran getTranAndHistory(String name);
 }
